@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.eveb.gateway.game.cq9.mapper.MbrTransferRecordMapper">
+
+    <select id="getTransferRecord"  resultType="com.eveb.gateway.game.cq9.model.MbrTransferRecordModel">
+		select  id as  'data.id',
+		        action as 'data.action',
+                account as 'data.target.account',
+                createTime as 'data.status.createtime',
+                endTime as 'data.status.endtime',
+                a.`status` as 'data.status.status',
+                a.`before` as 'data.before',
+                balance as 'data.balance',
+                currency as 'data.currency',
+                mtcode as 'data.event.mtcode',
+                amount as 'data.event.amount',
+                eventTime as 'data.event.eventtime',
+                a.`code` as 'data.status.code',
+                message as 'data.status.message',
+                datetime as 'data.status.datetime'
+		 from mbr_transfer_record a
+        where a.mtcode=#{mtcode}
+        limit 1
+	</select>
+    <insert id="insertTransferRecord" parameterType="com.eveb.gateway.game.cq9.model.MbrTransferRecordModel">
+        insert into mbr_transfer_record (action,account,createTime,endTime,`status`,`before`,balance,currency,mtcode,amount,eventTime,`code`,message,datetime,processStatus)
+        value
+        (#{rd.data.action},
+        #{rd.data.target.account},
+        #{rd.data.status.createtime},
+        #{rd.data.status.endtime},
+        #{rd.data.status.status},
+        #{rd.data.before},
+        #{rd.data.balance},
+        #{rd.data.currency},
+        #{rd.data.event.mtcode},
+        #{rd.data.event.amount},
+        #{rd.data.event.eventtime},
+        #{rd.status.code},
+        #{rd.status.message},
+        #{rd.status.datetime},
+        #{rd.processStatus})
+    </insert>
+
+    <update id="updateTransferRecord" parameterType="com.eveb.gateway.game.cq9.model.MbrTransferRecordModel">
+        update mbr_transfer_record set processStatus=#{rd.processStatus}
+        where mtcode=#{rd.data.event.mtcode}
+    </update>
+
+</mapper>

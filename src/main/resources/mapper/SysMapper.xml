@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.eveb.gateway.game.mapper.SysMapper">
+
+    <select id="selectProxys" parameterType="String" resultType="java.lang.String">
+      select `values` from s_sys_config where groups=#{groups}
+    </select>
+
+    <select id="getGmApiOne" resultType="com.eveb.gateway.game.model.TGmApi">
+        select a.* from s_gm_api a LEFT JOIN t_gm_depot d
+        on a.depotId=d.id
+        where d.depotCode=#{depotName}
+        <if test="agyAcc !=null and agyAcc !=''">
+            and a.agyAcc=#{agyAcc};
+        </if>
+        limit 1
+    </select>
+
+    <select id="getGmApiList" resultType="com.eveb.gateway.game.model.TGmApi">
+        select a.* from s_gm_api a LEFT JOIN t_gm_depot d
+        on a.depotId=d.id
+        where d.depotCode=#{depotName}
+    </select>
+
+    <select id="getApiPrefixBySiteCode" parameterType="String" resultType="java.lang.String">
+        select ap.prefix from t_cp_site s left join
+        s_gm_apiprefix ap on s.id=ap.siteId
+        where s.schemaName=#{siteCode}
+    </select>
+
+    <select id="getSiteCodeList" parameterType="map" resultType="java.lang.String">
+        select distinct schemaName from t_cp_site a where a.isapi=${isApi}
+        <if test="siteCode !=null and siteCode !=''">
+            And a.siteCode =#{siteCode}
+        </if>
+    </select>
+
+    <select id="getApiBySiteCode" resultType="com.eveb.gateway.game.model.TGmApi">
+        select a.*,ap.prefix from t_cp_site s inner join s_gm_apiprefix ap on s.id=ap.siteId
+        inner join s_gm_api a on ap.apiId=a.id
+        inner join t_gm_depot d on a.depotId=d.id
+        where s.siteCode=#{siteCode}
+        and d.depotCode=#{depotName}
+    </select>
+</mapper>
